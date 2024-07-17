@@ -9,4 +9,10 @@ public interface IUserRepository
     List<User> FindByFullName(string fullName);
     List<User> FindByPhoneNumber(string phoneNumber);
     List<User> FindAll();
+    public User Login(string userName, string passWord);
+    public void Register();
+    public void Deposit();
+    public void Withdraw();
+    public void Transfer();
+    List<Transaction> Transactions();
 }
