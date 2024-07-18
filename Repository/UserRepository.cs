@@ -8,8 +8,8 @@ namespace The_True_SpringHeroBank.Repository;
 public class UserRepository : IUserRepository
 {
     private List<User> users = new List<User>();
-    private const string MySqlConnectionString = "server=127.0.0.1;uid=root;" + "pwd=;database=the_true_springherobank";
-    public void AddUser(User user)
+    private const string MySqlConnectionString = "server=127.0.0.1;uid=root;" + "pwd=;database=the_true_spring_hero_bank";
+    public User AddUser(User user)
     {
         var conn = new MySqlConnection(MySqlConnectionString);
         conn.Open();
@@ -20,13 +20,14 @@ public class UserRepository : IUserRepository
         command.Parameters.AddWithValue("@Password", user.PassWord);
         command.Parameters.AddWithValue("@FullName", user.FullName);
         command.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-        command.Parameters.AddWithValue("@AccountNumber", Guid.NewGuid().ToString());
+        command.Parameters.AddWithValue("@AccountNumber", user.AccountNumber);
         command.Parameters.AddWithValue("@Balance", 0);
         command.Parameters.AddWithValue("@Type", user.Type.ToString());
         command.Parameters.AddWithValue("@Status",1);
         command.ExecuteNonQuery();
         conn.Close();
         Console.WriteLine("Sign Up Successfully");
+        return user;
     }
 
     public User FindByAccountNumber(string accountNumber)
@@ -159,11 +160,6 @@ public class UserRepository : IUserRepository
         }
         Console.WriteLine("Wrong UserName Or PassWord");
         return null;
-    }
-
-    public void Register()
-    {
-        throw new NotImplementedException();
     }
 
     public void Deposit()

@@ -16,3 +16,4 @@ C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\b
 C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\MySqlConnector.dll
 C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.csproj.AssemblyReference.cache
 C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True.589CBA17.Up2Date
+C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.sourcelink.json

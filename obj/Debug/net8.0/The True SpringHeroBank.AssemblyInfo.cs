@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("The True SpringHeroBank")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+14500b3429985baf8f6dfbef0b58b12f675d9050")]
 [assembly: System.Reflection.AssemblyProductAttribute("The True SpringHeroBank")]
 [assembly: System.Reflection.AssemblyTitleAttribute("The True SpringHeroBank")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
