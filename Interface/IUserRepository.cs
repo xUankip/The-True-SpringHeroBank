@@ -6,7 +6,7 @@ public interface IUserRepository
 {
     public User AddUser(User user);
     User FindByAccountNumber(string accountNumber);
-    List<User> FindByFullName(string fullName);
+    public User FindByFullName(string fullName);
     List<User> FindByPhoneNumber(string phoneNumber);
     List<User> FindAll();
     public User Login(string userName, string passWord);

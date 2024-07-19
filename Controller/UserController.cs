@@ -48,23 +48,41 @@ public class UserController
         
     }
 
+    public void DisplayUsers()
+    {
+        List<User> users = _userRepository.FindAll();
+        Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20} |{7, -20} ",
+            "Id", "Account NUmber", "User Name", "", "Full Name", "Phone Number", "Balance", "Status");
+        foreach (var user in users)
+        {
+            Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20}  ",
+                user.Id, user.AccountNumber, user.UserName, user.FullName, user.PhoneNumber, user.Balance, user.Status);
+        }
+    }
+
+    public void SearchUsersByName()
+    {
+        Console.WriteLine("Type Full Name");
+        string fullName = Console.ReadLine();
+        _userRepository.FindByFullName(fullName);
+    }
+
     public void Login()
     {
         Console.WriteLine("Username :");
         var username = Console.ReadLine();
         Console.WriteLine("Password: ");
         var password = Console.ReadLine();
-        var user = _userRepository.FindAll()
-            .FirstOrDefault(_user => _user.UserName == username && _user.PassWord == password);
+        var user = _userRepository.Login(username, password);
         if (user != null)
         {
             if (user.Type == User.UserType.Admin)
             {
-                _menu.AdminMenu();
+                _menu.AdminMenu(user);
             }
             else
             {
-                _menu.UserMenu();
+                _menu.UserMenu(user);
             }
         }
     }

@@ -1,11 +1,12 @@
 ﻿using System.Data;
+using System.Data.Common;
 using MySqlConnector;
 using The_True_SpringHeroBank.Entity;
 using The_True_SpringHeroBank.Interface;
 
 namespace The_True_SpringHeroBank.Repository;
 
-public class UserRepository : IUserRepository
+public class UserRepository
 {
     private List<User> users = new List<User>();
     private const string MySqlConnectionString = "server=127.0.0.1;uid=root;" + "pwd=;database=the_true_spring_hero_bank";
@@ -30,79 +31,48 @@ public class UserRepository : IUserRepository
         return user;
     }
 
+    public User findByInfo(string info, string value)
+    {         
+        User user = new User();
+        try
+        {
+            var conn = new MySqlConnection(MySqlConnectionString);
+            conn.Open();
+            string query = $"SELECT AccountNumber, UserName, PhoneNumber, Balance, Status WHERE {info} = @value;";
+            var command = new MySqlCommand(query, conn);
+            command.Parameters.AddWithValue("@value", value);
+            command.Connection = conn;
+            DbDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                user.UserName = reader.GetString("UserName");
+                user.AccountNumber = reader.GetString("AccountNumber");
+                user.PhoneNumber = reader.GetString("PhoneNumber");
+                user.Balance = reader.GetDouble("Balance");
+                user.Status = reader.GetInt32("Status");
+                conn.Close();
+            }
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        return user;
+    }
+
     public User FindByAccountNumber(string accountNumber)
     {
-        var conn = new MySqlConnection(MySqlConnectionString);
-        conn.Open();
-        string query = "SELECT * FROM users WHERE AccountNumber = @AccountNumber";
-        var command = new MySqlCommand(query, conn);
-        command.Parameters.AddWithValue("@AccountNumber", accountNumber);
-        var reader = command.ExecuteReader();
-        if (reader.Read())
-        {
-            return new User()
-            {
-                Id = reader.GetInt32("Id"),
-                UserName = reader.GetString("UserName"),
-                PassWord = reader.GetString("Password"),
-                FullName = reader.GetString("FullName"),
-                PhoneNumber = reader.GetString("PhoneNumber"),
-                Balance = reader.GetDouble("Balance"),
-                Type = (User.UserType)Enum.Parse(typeof(User.UserType), reader.GetString("Type")),
-                Status = reader.GetInt32("Status")
-            };
-        }
-        return null;
+        return findByInfo("AccountNumber", accountNumber);
     }
 
-    public List<User> FindByFullName(string fullName)
+    public User FindByFullName(string fullName)
     {
-        var conn = new MySqlConnection(MySqlConnectionString);
-        conn.Open();
-        string query = "SELECT * FROM users WHERE FullName LIKE @FullName";
-        var command = new MySqlCommand(query, conn);
-        command.Parameters.AddWithValue("@FullName", "---" + fullName + "---");
-        var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            users.Add(new User()
-            {
-                Id = reader.GetInt32("Id"),
-                UserName = reader.GetString("UserName"),
-                PassWord = reader.GetString("Password"),
-                FullName = reader.GetString("FullName"),
-                PhoneNumber = reader.GetString("PhoneNumber"),
-                Balance = reader.GetDouble("Balance"),
-                Type = (User.UserType)Enum.Parse(typeof(User.UserType), reader.GetString("Type")),
-                Status = reader.GetInt32("Status")
-            });
-        }
-        return users;
+        return findByInfo("FullName", fullName);
     }
 
-    public List<User> FindByPhoneNumber(string phoneNumber)
+    public User FindByPhoneNumber(string phoneNumber)
     {
-        var conn = new MySqlConnection(MySqlConnectionString);
-        conn.Open();
-        string query = "SELECT * FROM users WHERE PhoneNumber LIKE @PhoneNumber";
-        var command = new MySqlCommand(query, conn);
-        command.Parameters.AddWithValue("@FullName", "---" + phoneNumber + "---");
-        var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            users.Add(new User()
-            {
-                Id = reader.GetInt32("Id"),
-                UserName = reader.GetString("UserName"),
-                PassWord = reader.GetString("Password"),
-                FullName = reader.GetString("FullName"),
-                PhoneNumber = reader.GetString("PhoneNumber"),
-                Balance = reader.GetDouble("Balance"),
-                Type = (User.UserType)Enum.Parse(typeof(User.UserType), reader.GetString("Type")),
-                Status = reader.GetInt32("Status")
-            });
-        }
-        return users;
+        return findByInfo("PhoneNumber", phoneNumber);
     }
 
     public List<User> FindAll()
@@ -140,19 +110,20 @@ public class UserRepository : IUserRepository
         var reader = command.ExecuteReader();
         if (reader.Read())
         {
-            if (reader.GetInt32(0) == 0)
+            if (reader.GetInt32("Status") == 0)
             {
                 Console.WriteLine("Account LOCKED");
             }
             User user = new User
             {
-                Id = reader.GetInt32("UserId"),
+                Id = reader.GetInt32("Id"),
                 UserName = reader.GetString("Username"),
                 PassWord = reader.GetString("Password"),
                 FullName = reader.GetString("FullName"),
                 PhoneNumber = reader.GetString("PhoneNumber"),
                 AccountNumber = reader.GetString("AccountNumber"),
                 Balance = reader.GetDouble("Balance"),
+                Type = (User.UserType)Enum.Parse(typeof(User.UserType), reader.GetString("Type")),
                 Status = reader.GetInt32("Status")
             };
             Console.WriteLine("Login Success");
