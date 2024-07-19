@@ -156,11 +156,6 @@ public class UserRepository
         return null;
     }
 
-    public void Register()
-    {
-        throw new NotImplementedException();
-    }
-
     public void Deposit()
     {
         throw new NotImplementedException();
