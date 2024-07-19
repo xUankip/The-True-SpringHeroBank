@@ -13,7 +13,7 @@ public class User
     public double Balance { get; set; } = 0;
     public List<Transaction> Transaction { get; set; } = new List<Transaction>();
     public UserType Type { get; set; }
-    public int Status { get; set; } //1-active 2-lock
+    public int Status { get; set; } //1-active 0-lock
     public enum UserType
     {
         RegularUser, Admin

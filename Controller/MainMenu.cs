@@ -56,6 +56,7 @@ public class MainMenu
             Console.WriteLine("----------------------------------------");
             Console.Write("Type your choice (1 to 11): ");
             var choice = Console.ReadLine();
+            Console.WriteLine(choice);
             switch (choice)
             {
                 case "1":
@@ -68,10 +69,10 @@ public class MainMenu
                     userController.SearchUsersByName();
                     break;
                 case "4":
-                    // SearchUsersByAccountNumber();
+                    userController.SearchUsersByAccountNumber();
                     break;
                 case "5":
-                    // SearchUsersByPhone();
+                    userController.SearchUsersByPhone();
                     break;
                 case "6":
                     // Register();
@@ -89,11 +90,13 @@ public class MainMenu
                     // UpdateAccountPassword();
                     break;
                 case "11":
-                    return;
+                    break;
                 default:
                     Console.WriteLine("Invalid choice, Try Again!");
                     break;
             }
+            Console.WriteLine("Enter to continue!");
+            Console.ReadLine();
         }
     }
 

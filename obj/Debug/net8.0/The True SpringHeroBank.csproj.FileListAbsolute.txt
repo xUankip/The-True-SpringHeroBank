@@ -1,19 +1,38 @@
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\The True SpringHeroBank.exe
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\The True SpringHeroBank.deps.json
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\The True SpringHeroBank.runtimeconfig.json
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\The True SpringHeroBank.dll
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\The True SpringHeroBank.pdb
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.AssemblyInfoInputs.cache
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.AssemblyInfo.cs
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.csproj.CoreCompileInputs.cache
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.dll
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\refint\The True SpringHeroBank.dll
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.pdb
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.genruntimeconfig.cache
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\ref\The True SpringHeroBank.dll
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\bin\Debug\net8.0\MySqlConnector.dll
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.csproj.AssemblyReference.cache
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True.589CBA17.Up2Date
-C:\Users\Windows\RiderProjects\The True SpringHeroBank\The True SpringHeroBank\obj\Debug\net8.0\The True SpringHeroBank.sourcelink.json
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.exe
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.deps.json
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.runtimeconfig.json
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.dll
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.pdb
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.GeneratedMSBuildEditorConfig.editorconfig
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.AssemblyInfoInputs.cache
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.AssemblyInfo.cs
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.csproj.CoreCompileInputs.cache
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.dll
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/refint/The True SpringHeroBank.dll
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.pdb
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.genruntimeconfig.cache
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/ref/The True SpringHeroBank.dll
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/bin/Debug/net8.0/MySqlConnector.dll
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.csproj.AssemblyReference.cache
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True.589CBA17.Up2Date
+C:/Users/Windows/RiderProjects/The True SpringHeroBank/The True SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.sourcelink.json
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.deps.json
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.runtimeconfig.json
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.dll
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/bin/Debug/net8.0/The True SpringHeroBank.pdb
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/bin/Debug/net8.0/MySqlConnector.dll
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.csproj.AssemblyReference.cache
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.GeneratedMSBuildEditorConfig.editorconfig
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.AssemblyInfoInputs.cache
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.AssemblyInfo.cs
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.csproj.CoreCompileInputs.cache
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.sourcelink.json
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True.589CBA17.Up2Date
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.dll
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/refint/The True SpringHeroBank.dll
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.pdb
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/The True SpringHeroBank.genruntimeconfig.cache
+/Users/truongnx/Documents/GitHub/The-True-SpringHeroBank/obj/Debug/net8.0/ref/The True SpringHeroBank.dll

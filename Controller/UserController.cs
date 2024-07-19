@@ -6,7 +6,6 @@ namespace The_True_SpringHeroBank.Controller;
 public class UserController
 {
     private UserRepository _userRepository = new UserRepository();
-    private User _user = new User();
     private MainMenu _menu = new MainMenu();
     public void Register()
     {       
@@ -51,20 +50,45 @@ public class UserController
     public void DisplayUsers()
     {
         List<User> users = _userRepository.FindAll();
-        Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20} |{7, -20} ",
-            "Id", "Account NUmber", "User Name", "", "Full Name", "Phone Number", "Balance", "Status");
+        Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20} | {7, -20} ",
+            "Id", "Account Number", "User Name", "Full Name", "Phone Number", "Balance", "Type", "Status");
+
         foreach (var user in users)
         {
-            Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20}  ",
-                user.Id, user.AccountNumber, user.UserName, user.FullName, user.PhoneNumber, user.Balance, user.Status);
+            Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20} | {7, -20} ",
+                user.Id, user.AccountNumber, user.UserName, user.FullName, user.PhoneNumber, user.Balance, user.Type, user.Status);
         }
     }
 
+    public void DisplayByInfo(User user)
+    {
+        Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20} | {7, -20} ",
+            "Id", "Account Number", "User Name", "Full Name", "Phone Number", "Balance", "Type", "Status");   
+        Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20} | {7, -20} ",
+            user.Id, user.AccountNumber, user.UserName, user.FullName, user.PhoneNumber, user.Balance, user.Type, user.Status);
+    }
     public void SearchUsersByName()
     {
         Console.WriteLine("Type Full Name");
         string fullName = Console.ReadLine();
-        _userRepository.FindByFullName(fullName);
+        User user = _userRepository.FindByFullName(fullName);
+        DisplayByInfo(user);
+    }
+
+    public void SearchUsersByAccountNumber()
+    {
+        Console.WriteLine("Type Account Number");
+        string accountNumber = Console.ReadLine();
+        User user = _userRepository.FindByAccountNumber(accountNumber);
+        DisplayByInfo(user);
+    }
+
+    public void SearchUsersByPhone()
+    {
+        Console.WriteLine("Type Phone Number");
+        string phoneNumber = Console.ReadLine();
+        User user = _userRepository.FindByPhoneNumber(phoneNumber);
+        DisplayByInfo(user);
     }
 
     public void Login()
