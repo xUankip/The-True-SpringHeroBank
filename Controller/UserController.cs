@@ -7,6 +7,7 @@ namespace The_True_SpringHeroBank.Controller;
 public class UserController
 {
     private UserRepository _userRepository = new UserRepository();
+    private TransactionRepository _transactionRepository = new TransactionRepository();
     private MainMenu _menu = new MainMenu();
     public void Register()
     {       
@@ -130,7 +131,6 @@ public class UserController
 
     public void Withdraw()
     {
-        TransactionRepository transactionRepository = new TransactionRepository();
         User user = new User();
         Console.WriteLine("Enter your Password");
         string pass = Console.ReadLine();
@@ -139,7 +139,7 @@ public class UserController
         {
             Console.WriteLine("Enter the amount you want to deposit");
             double amount = Convert.ToDouble(Console.ReadLine());
-            bool success = transactionRepository.UserWithdraw(user, amount);
+            bool success = _transactionRepository.UserWithdraw(user, amount);
             if (amount > 0 && amount < balance && success)
             {
                 Console.WriteLine("Withdraw Successful!");
@@ -150,6 +150,21 @@ public class UserController
 
     public void Transfer()
     {
-        
+        User user = new User();
+        Console.WriteLine("Enter Sender Account Number");
+        string sender = Console.ReadLine();
+        _userRepository.FindByAccountNumber(sender);
+        if (sender != null)
+        {
+            Console.WriteLine("Enter Receiver Account Number");
+            string receiver = Console.ReadLine();
+            if (receiver == user.AccountNumber)
+            {
+                Console.WriteLine("Enter Amount to Transfer");
+                double amount = Convert.ToDouble(Console.ReadLine());
+                bool success = _transactionRepository.UserTransfer(sender, receiver, amount);
+            }
+        }
+       
     }
 }
