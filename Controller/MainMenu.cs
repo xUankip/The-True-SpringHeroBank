@@ -75,7 +75,7 @@ public class MainMenu
                     userController.SearchUsersByPhone();
                     break;
                 case "6":
-                    // Register();
+                    userController.Register();
                     break;
                 case "7":
                     // LockUnlockUserAccount();
@@ -102,6 +102,55 @@ public class MainMenu
 
     public void UserMenu(User user)
     {
-        
+        UserController userController = new UserController();
+        TransactionController transactionController = new TransactionController();
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("------ Spring Hero Bank ------");
+            Console.WriteLine($"Welcome back User {user.UserName}");
+            Console.WriteLine("1. Deposit.");
+            Console.WriteLine("2. Withdraw.");
+            Console.WriteLine("3. Transfer.");
+            Console.WriteLine("4. Balance");
+            Console.WriteLine("5. Change Information");
+            Console.WriteLine("6. Change Password");
+            Console.WriteLine("7. Transaction History.");
+            Console.WriteLine("8. Exit.");
+            Console.WriteLine("----------------------------------------");
+            Console.Write("Enter your choice (1 to 8): ");
+
+            var choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    userController.Deposit();
+                    break;
+                case "2":
+                    userController.Withdraw();
+                    break;
+                case "3":
+                    // userController.Transfer();
+                    break;
+                case "4":
+                    // userController.QueryBalance();
+                    break;
+                case "5":
+                    // userController.UpdatePersonalInfo();
+                    break;
+                case "6":
+                    // userController.UpdatePassword();
+                    break;
+                case "7":
+                    // userController.QueryTransactionHistory();
+                    break;
+                case "8":
+                    break;
+                default:
+                    Console.WriteLine("Lựa chọn không hợp lệ, vui lòng thử lại.");
+                    Console.ReadLine();
+                    break;
+            }
+        }
     }
 }

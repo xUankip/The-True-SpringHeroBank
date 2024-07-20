@@ -84,7 +84,7 @@ public class UserRepository
     {
         List<User> users = new List<User>();
         var conn = new MySqlConnection(MySqlConnectionString);
-
+        conn.Open();
         try
         {
             conn.Open();
@@ -154,21 +154,6 @@ public class UserRepository
         }
         Console.WriteLine("Wrong UserName Or PassWord");
         return null;
-    }
-
-    public void Deposit()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Withdraw()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Transfer()
-    {
-        throw new NotImplementedException();
     }
 
     public List<Transaction> Transactions()

@@ -1,4 +1,5 @@
-﻿using The_True_SpringHeroBank.Entity;
+﻿using System.Threading.Channels;
+using The_True_SpringHeroBank.Entity;
 using The_True_SpringHeroBank.Repository;
 
 namespace The_True_SpringHeroBank.Controller;
@@ -41,10 +42,6 @@ public class UserController
         }
         user.AccountNumber = randomDigits;
         _userRepository.AddUser(user);
-    }
-    public void Deposit()
-    {
-        
     }
 
     public void DisplayUsers()
@@ -109,5 +106,50 @@ public class UserController
                 _menu.UserMenu(user);
             }
         }
+    }
+
+    
+    public void Deposit()
+    {
+        TransactionRepository transactionRepository = new TransactionRepository();
+        User user = new User();
+        Console.WriteLine("Enter your Password");
+        string pass = Console.ReadLine();
+        if (pass == user.PassWord)
+        {
+            Console.WriteLine("Enter the amount you want to deposit");
+            double amount = Convert.ToDouble(Console.ReadLine());
+            bool success = transactionRepository.UserDeposit(user, amount);
+            if (amount > 0 && success)
+            {
+                Console.WriteLine("Deposit Successful!");
+                DisplayByInfo(user);
+            }
+        }
+    }
+
+    public void Withdraw()
+    {
+        TransactionRepository transactionRepository = new TransactionRepository();
+        User user = new User();
+        Console.WriteLine("Enter your Password");
+        string pass = Console.ReadLine();
+        double balance = user.Balance;
+        if (pass == user.PassWord)
+        {
+            Console.WriteLine("Enter the amount you want to deposit");
+            double amount = Convert.ToDouble(Console.ReadLine());
+            bool success = transactionRepository.UserWithdraw(user, amount);
+            if (amount > 0 && amount < balance && success)
+            {
+                Console.WriteLine("Withdraw Successful!");
+                DisplayByInfo(user);
+            }
+        }
+    }
+
+    public void Transfer()
+    {
+        
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace The_True_SpringHeroBank.Entity;
 
-public class Transaction
+public class Transaction()
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
