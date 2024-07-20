@@ -150,21 +150,51 @@ public class UserController
 
     public void Transfer()
     {
-        User user = new User();
         Console.WriteLine("Enter Sender Account Number");
-        string sender = Console.ReadLine();
-        _userRepository.FindByAccountNumber(sender);
+        string senderAccountNumber = Console.ReadLine();
+        User sender = _userRepository.FindByAccountNumber(senderAccountNumber);
+
         if (sender != null)
         {
             Console.WriteLine("Enter Receiver Account Number");
-            string receiver = Console.ReadLine();
-            if (receiver == user.AccountNumber)
+            string receiverAccountNumber = Console.ReadLine();
+
+            if (!string.IsNullOrWhiteSpace(receiverAccountNumber))
             {
                 Console.WriteLine("Enter Amount to Transfer");
-                double amount = Convert.ToDouble(Console.ReadLine());
-                bool success = _transactionRepository.UserTransfer(sender, receiver, amount);
+                if (double.TryParse(Console.ReadLine(), out double amount))
+                {
+                    if (amount > 0)
+                    {
+                        bool success = _transactionRepository.UserTransfer(sender, receiverAccountNumber, amount);
+
+                        if (success)
+                        {
+                            Console.WriteLine("Transfer successful!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Transfer failed.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Amount must be greater than zero.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid amount entered.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid receiver account number.");
             }
         }
-       
+        else
+        {
+            Console.WriteLine("Sender account not found.");
+        }
     }
 }
