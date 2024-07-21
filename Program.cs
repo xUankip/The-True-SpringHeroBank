@@ -2,7 +2,5 @@
 
 using The_True_SpringHeroBank.Controller;
 
-// MainMenu menu = new MainMenu();
-// menu.Main();
-UserController userController = new UserController();
-userController.UpdatePersonalInfo();
+MainMenu menu = new MainMenu();
+menu.Main();
