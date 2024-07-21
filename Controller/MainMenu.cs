@@ -106,7 +106,7 @@ public class MainMenu
         TransactionController transactionController = new TransactionController();
         while (true)
         {
-            Console.Clear();
+            // Console.Clear();
             Console.WriteLine("------ Spring Hero Bank ------");
             Console.WriteLine($"Welcome back User {user.UserName}");
             Console.WriteLine("1. Deposit.");
@@ -130,16 +130,16 @@ public class MainMenu
                     userController.Withdraw();
                     break;
                 case "3":
-                    // userController.Transfer();
+                    userController.Transfer();
                     break;
                 case "4":
-                    // userController.QueryBalance();
+                    userController.QueryBalance();
                     break;
                 case "5":
-                    // userController.UpdatePersonalInfo();
+                    userController.UpdatePersonalInfo();
                     break;
                 case "6":
-                    // userController.UpdatePassword();
+                    userController.UpdatePassword();
                     break;
                 case "7":
                     // userController.QueryTransactionHistory();
@@ -147,7 +147,7 @@ public class MainMenu
                 case "8":
                     break;
                 default:
-                    Console.WriteLine("Lựa chọn không hợp lệ, vui lòng thử lại.");
+                    Console.WriteLine("Invalid choice, Try Agian");
                     Console.ReadLine();
                     break;
             }

@@ -65,6 +65,12 @@ public class UserController
         Console.WriteLine("{0, -10} | {1, -20} | {2, -20} | {3, -20} | {4, -20} | {5, -20} | {6, -20} | {7, -20} ",
             user.Id, user.AccountNumber, user.UserName, user.FullName, user.PhoneNumber, user.Balance, user.Type, user.Status);
     }
+
+    public void DisplayBalance(User user)
+    {
+        Console.WriteLine("AccountNumber" +user.AccountNumber);
+        Console.WriteLine("Balance" +user.Balance);
+    }
     public void SearchUsersByName()
     {
         Console.WriteLine("Type Full Name");
@@ -108,43 +114,89 @@ public class UserController
             }
         }
     }
-
     
     public void Deposit()
     {
-        TransactionRepository transactionRepository = new TransactionRepository();
-        User user = new User();
-        Console.WriteLine("Enter your Password");
-        string pass = Console.ReadLine();
-        if (pass == user.PassWord)
+        // TransactionRepository transactionRepository = new TransactionRepository();
+        // User user = new User();
+        // Console.WriteLine("Enter your Password");
+        // string pass = Console.ReadLine();
+        // if (pass == user.PassWord)
+        // {
+        //     Console.WriteLine("Enter the amount you want to deposit");
+        //     double amount = Convert.ToDouble(Console.ReadLine());
+        //     bool success = transactionRepository.UserDeposit(user, amount);
+        //     if (amount > 0 && success)
+        //     {
+        //         Console.WriteLine("Deposit Successful!");
+        //         DisplayByInfo(user);
+        //     }
+        // }
+        Console.WriteLine("Enter your Account Number:");
+        string accountNumber = Console.ReadLine();
+        User user = _userRepository.FindByAccountNumber(accountNumber);
+
+        if (user != null)
         {
-            Console.WriteLine("Enter the amount you want to deposit");
+            Console.WriteLine("Enter the amount you want to deposit:");
             double amount = Convert.ToDouble(Console.ReadLine());
-            bool success = transactionRepository.UserDeposit(user, amount);
-            if (amount > 0 && success)
+
+            if (amount > 0)
             {
-                Console.WriteLine("Deposit Successful!");
-                DisplayByInfo(user);
+                bool success = _transactionRepository.UserDeposit(user, amount);
+                if (success)
+                {
+                    Console.WriteLine("Deposit Successful!");
+                    DisplayBalance(user);
+                }
+                else
+                {
+                    Console.WriteLine("Deposit Failed.");
+                }
             }
+            else
+            {
+                Console.WriteLine("Amount must be greater than zero.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("User not found.");
         }
     }
 
     public void Withdraw()
     {
-        User user = new User();
-        Console.WriteLine("Enter your Password");
-        string pass = Console.ReadLine();
-        double balance = user.Balance;
-        if (pass == user.PassWord)
+        Console.WriteLine("Enter your Account Number:");
+        string accountNumber = Console.ReadLine();
+        User user = _userRepository.FindByAccountNumber(accountNumber);
+
+        if (user != null)
         {
-            Console.WriteLine("Enter the amount you want to deposit");
+            Console.WriteLine("Enter the amount you want to With draw:");
             double amount = Convert.ToDouble(Console.ReadLine());
-            bool success = _transactionRepository.UserWithdraw(user, amount);
-            if (amount > 0 && amount < balance && success)
+
+            if (amount > 0 && amount < user.Balance)
             {
-                Console.WriteLine("Withdraw Successful!");
-                DisplayByInfo(user);
+                bool success = _transactionRepository.UserWithdraw(user, amount);
+                if (success)
+                {
+                    Console.WriteLine("With draw Successful!");
+                    DisplayBalance(user);
+                }
+                else
+                {
+                    Console.WriteLine("With draw Failed.");
+                }
             }
+            else
+            {
+                Console.WriteLine("Amount must be greater than zero.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("User not found.");
         }
     }
 
@@ -195,6 +247,70 @@ public class UserController
         else
         {
             Console.WriteLine("Sender account not found.");
+        }
+    }
+
+    public void QueryBalance()
+    {
+            Console.WriteLine("Enter your Account Number");
+            var accountNumber = Console.ReadLine();
+            User user = _userRepository.CheckBalance(accountNumber);
+            Console.WriteLine("Your Balance : " + user.Balance);
+    }
+
+    public void UpdatePersonalInfo()
+    {
+        Console.WriteLine("Enter Account number");
+        var accountNumber = Console.ReadLine();
+        User user = _userRepository.FindByAccountNumber(accountNumber);
+        if (accountNumber == user.AccountNumber)
+        {
+            Console.WriteLine("Enter New Full Name");
+            user.FullName = Console.ReadLine();
+            Console.WriteLine("Enter New Phone Number");
+            user.PhoneNumber = Console.ReadLine();
+            _userRepository.EditInfomation(user, accountNumber);
+        }
+        else
+        {
+            Console.WriteLine("Account not Found");
+        }
+    }
+
+    public void UpdatePassword()
+    {
+        Console.WriteLine("Enter your Account Number:");
+        string accountNumber = Console.ReadLine();
+        var user = _userRepository.FindByAccountNumber(accountNumber);
+        if (user == null)
+        {
+            Console.WriteLine("Account not found.");
+            return;
+        }
+
+        Console.WriteLine("Enter your current Password:");
+        string currentPassword = Console.ReadLine();
+
+        Console.WriteLine("Enter your new Password:");
+        string newPassword = Console.ReadLine();
+
+        Console.WriteLine("Re-enter your new Password:");
+        string confirmPassword = Console.ReadLine();
+
+        if (newPassword != confirmPassword)
+        {
+            Console.WriteLine("New passwords do not match.");
+            return;
+        }
+
+        bool success = _userRepository.EditPassword(user, currentPassword, newPassword);
+        if (success)
+        {
+            Console.WriteLine("Password changed successfully!");
+        }
+        else
+        {
+            Console.WriteLine("Failed to change password.");
         }
     }
 }

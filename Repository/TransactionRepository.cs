@@ -5,79 +5,43 @@ namespace The_True_SpringHeroBank.Repository;
 
 public class TransactionRepository
 {
-    private const string MySqlConnectionString = "server=127.0.0.1;uid=root;" + "pwd=;database=the_true_spring_hero_bank";
+    private const string MySqlConnectionString =
+        "server=127.0.0.1;uid=root;" + "pwd=;database=the_true_spring_hero_bank";
+
     public bool UserDeposit(User user, double amount)
     {
-        var conn = new MySqlConnection(MySqlConnectionString);
-        conn.Open();
-        try
+        using (var conn = new MySqlConnection(MySqlConnectionString))
         {
-            string updateBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @Id";
-            var command = new MySqlCommand(updateBalanceQuery, conn);
-            command.Parameters.AddWithValue("@amount", amount);
-            command.Parameters.AddWithValue("@Id", user.Id);
-            command.ExecuteNonQuery();
-
-            string insertTransactionQuery = "INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter, Id)" +
-                                            " VALUES (@createdAt, @type, @amount, @senderAccountNumber, @reciverAccountNumber, @balanceAfter, @Id)";
-            var command2 = new MySqlCommand(insertTransactionQuery, conn);
-            command2.Parameters.AddWithValue("@createdAt", DateTime.Now);
-            command2.Parameters.AddWithValue("@type", Transaction.TransactionType.Deposit.ToString());
-            command2.Parameters.AddWithValue("@amount", amount);
-            command2.Parameters.AddWithValue("@senderAccountNumber", user.AccountNumber);
-            command2.Parameters.AddWithValue("@reciverAccountNumber", user.AccountNumber);
-            command2.Parameters.AddWithValue("@balanceAfter", user.Balance + amount);
-            command2.Parameters.AddWithValue("@Id", user.Id);
-            command2.ExecuteNonQuery();
-
-            user.Balance += amount;
-            user.Transaction.Add(new Transaction
+            conn.Open();
+            var transaction = conn.BeginTransaction();
+            try
             {
-              Id  = (int)command.LastInsertedId,
-              CreatedAt = DateTime.Now,
-              Type = Transaction.TransactionType.Deposit,
-              Amount = amount,
-              SenderAccountNumber = user.AccountNumber,
-              ReciverAccountNumber = user.AccountNumber,
-              BalanceAfter = user.Balance
-            });
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        return false;
-    }
-    public bool UserWithdraw(User user, double amount)
-    {
-        var conn = new MySqlConnection(MySqlConnectionString);
-        conn.Open();
-        try
-        {
-            string updateBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @Id";
-            var command = new MySqlCommand(updateBalanceQuery, conn);
-            command.Parameters.AddWithValue("@amount", amount);
-            command.Parameters.AddWithValue("@Id", user.Id);
-            command.ExecuteNonQuery();
+                // Update user balance
+                string updateBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @Id";
+                var command = new MySqlCommand(updateBalanceQuery, conn, transaction);
+                command.Parameters.AddWithValue("@amount", amount);
+                command.Parameters.AddWithValue("@Id", user.Id);
+                command.ExecuteNonQuery();
 
-            string insertTransactionQuery = "INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter, Id)" +
-                                            " VALUES (@createdAt, @type, @amount, @senderAccountNumber, @reciverAccountNumber, @balanceAfter, @Id)";
-            var command2 = new MySqlCommand(insertTransactionQuery, conn);
-            command2.Parameters.AddWithValue("@createdAt", DateTime.Now);
-            command2.Parameters.AddWithValue("@type", Transaction.TransactionType.Deposit.ToString());
-            command2.Parameters.AddWithValue("@amount", amount);
-            command2.Parameters.AddWithValue("@senderAccountNumber", user.AccountNumber);
-            command2.Parameters.AddWithValue("@reciverAccountNumber", user.AccountNumber);
-            command2.Parameters.AddWithValue("@balanceAfter", user.Balance - amount);
-            command2.Parameters.AddWithValue("@Id", user.Id);
-            command2.ExecuteNonQuery();
-            if (amount <= user.Balance)
-            {
-                user.Balance -= amount;
+                // Insert transaction record
+                string insertTransactionQuery =
+                    "INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter, Id)" +
+                    " VALUES (@createdAt, @type, @amount, @senderAccountNumber, @reciverAccountNumber, @balanceAfter, @Id)";
+                var command2 = new MySqlCommand(insertTransactionQuery, conn, transaction);
+                command2.Parameters.AddWithValue("@createdAt", DateTime.Now);
+                command2.Parameters.AddWithValue("@type", Transaction.TransactionType.Deposit.ToString());
+                command2.Parameters.AddWithValue("@amount", amount);
+                command2.Parameters.AddWithValue("@senderAccountNumber", user.AccountNumber);
+                command2.Parameters.AddWithValue("@reciverAccountNumber", user.AccountNumber);
+                command2.Parameters.AddWithValue("@balanceAfter", user.Balance + amount);
+                command2.ExecuteNonQuery();
+
+                transaction.Commit();
+
+                // Update user object
+                user.Balance += amount;
                 user.Transaction.Add(new Transaction
                 {
-                    Id  = (int)command.LastInsertedId,
                     CreatedAt = DateTime.Now,
                     Type = Transaction.TransactionType.Deposit,
                     Amount = amount,
@@ -85,71 +49,130 @@ public class TransactionRepository
                     ReciverAccountNumber = user.AccountNumber,
                     BalanceAfter = user.Balance
                 });
+
+                return true;
             }
-            else
+            catch (Exception e)
             {
-                Console.WriteLine("Withdraw Fail!!");
+                transaction.Rollback();
+                Console.WriteLine(e);
+                return false;
             }
-            
         }
-        catch (Exception e)
+    }
+
+    public bool UserWithdraw(User user, double amount)
+    {
+        using (var conn = new MySqlConnection(MySqlConnectionString))
         {
-            Console.WriteLine(e);
-            throw;
+            conn.Open();
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                // Update user balance
+                string updateBalanceQuery = "UPDATE users SET Balance = Balance - @amount WHERE Id = @Id";
+                var command = new MySqlCommand(updateBalanceQuery, conn, transaction);
+                command.Parameters.AddWithValue("@amount", amount);
+                command.Parameters.AddWithValue("@Id", user.Id);
+                command.ExecuteNonQuery();
+
+                // Insert transaction record
+                string insertTransactionQuery =
+                    "INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter, Id)" +
+                    " VALUES (@createdAt, @type, @amount, @senderAccountNumber, @reciverAccountNumber, @balanceAfter, @Id)";
+                var command2 = new MySqlCommand(insertTransactionQuery, conn, transaction);
+                command2.Parameters.AddWithValue("@createdAt", DateTime.Now);
+                command2.Parameters.AddWithValue("@type", Transaction.TransactionType.Withdraw.ToString());
+                command2.Parameters.AddWithValue("@amount", amount);
+                command2.Parameters.AddWithValue("@senderAccountNumber", user.AccountNumber);
+                command2.Parameters.AddWithValue("@reciverAccountNumber", user.AccountNumber);
+                command2.Parameters.AddWithValue("@balanceAfter", user.Balance + amount);
+                command2.ExecuteNonQuery();
+
+                transaction.Commit();
+
+                // Update user object
+                user.Balance -= amount;
+                user.Transaction.Add(new Transaction
+                {
+                    CreatedAt = DateTime.Now,
+                    Type = Transaction.TransactionType.Withdraw,
+                    Amount = amount,
+                    SenderAccountNumber = user.AccountNumber,
+                    ReciverAccountNumber = user.AccountNumber,
+                    BalanceAfter = user.Balance
+                });
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                transaction.Rollback();
+                Console.WriteLine(e);
+                return false;
+            }
         }
-        return false;
     }
 
     public bool UserTransfer(User sender, string receiverAccountNumber, double amount)
+{
+    using (var conn = new MySqlConnection(MySqlConnectionString))
     {
-        var conn = new MySqlConnection(MySqlConnectionString);
         conn.Open();
         var transaction = conn.BeginTransaction();
         try
         {
-            string findReceiverQuery = "SELECT * FROM users WHERE  AccountNumber = @receiveraccountNumber";
-            var command = new MySqlCommand(findReceiverQuery, conn, transaction);
-            command.Parameters.AddWithValue("@receiverAccountNumber", receiverAccountNumber);
+            // Find the receiver
+            string findReceiverQuery = "SELECT * FROM users WHERE AccountNumber = @receiverAccountNumber";
+            var findReceiverCommand = new MySqlCommand(findReceiverQuery, conn, transaction);
+            findReceiverCommand.Parameters.AddWithValue("@receiverAccountNumber", receiverAccountNumber);
             User receiver = null;
-            var reader = command.ExecuteReader();
-            if (reader.Read())
+            using (var reader = findReceiverCommand.ExecuteReader())
             {
-                receiver = new User
+                if (reader.Read())
                 {
-                    Id = reader.GetInt32("Id"),
-                    UserName = reader.GetString("UserName"),
-                    AccountNumber = reader.GetString("AccountNumber"),
-                    FullName = reader.GetString("FullName"),
-                    PhoneNumber = reader.GetString("PhoneNumber"),
-                    Balance = reader.GetDouble("Balance"),
-                    Status = reader.GetInt32("Status")
-                };
+                    receiver = new User
+                    {
+                        Id = reader.GetInt32("Id"),
+                        UserName = reader.GetString("UserName"),
+                        AccountNumber = reader.GetString("AccountNumber"),
+                        FullName = reader.GetString("FullName"),
+                        PhoneNumber = reader.GetString("PhoneNumber"),
+                        Balance = reader.GetDouble("Balance"),
+                        Status = reader.GetInt32("Status")
+                    };
+                }
             }
 
             if (receiver == null)
             {
                 Console.WriteLine("Account Not Found");
+                return false;
             }
 
             if (sender.Balance < amount)
             {
                 Console.WriteLine("Insufficient Balance");
+                return false;
             }
-            //update sender Balance
+
+            // Update sender balance
             string updateSenderBalanceQuery = "UPDATE users SET Balance = Balance - @amount WHERE Id = @senderId";
             var updateSenderBalanceCommand = new MySqlCommand(updateSenderBalanceQuery, conn, transaction);
             updateSenderBalanceCommand.Parameters.AddWithValue("@amount", amount);
             updateSenderBalanceCommand.Parameters.AddWithValue("@senderId", sender.Id);
             updateSenderBalanceCommand.ExecuteNonQuery();
-            //update receiver balance
+
+            // Update receiver balance
             string updateReceiverBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @receiverId";
             var updateReceiverBalanceCommand = new MySqlCommand(updateReceiverBalanceQuery, conn, transaction);
             updateReceiverBalanceCommand.Parameters.AddWithValue("@amount", amount);
             updateReceiverBalanceCommand.Parameters.AddWithValue("@receiverId", receiver.Id);
             updateReceiverBalanceCommand.ExecuteNonQuery();
-            //save transaction
-            string insertTransactionQuery = @"INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter, UserId) 
-                                                      VALUES (@createdAt, @type, @amount, @senderAccountNumber, @receiverAccountNumber, @balanceAfter, @userId)";
+
+            // Save transaction
+            string insertTransactionQuery = @"INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter) 
+                                              VALUES (@createdAt, @type, @amount, @senderAccountNumber, @receiverAccountNumber, @balanceAfter)";
             var insertTransactionCommand = new MySqlCommand(insertTransactionQuery, conn, transaction);
             insertTransactionCommand.Parameters.AddWithValue("@createdAt", DateTime.Now);
             insertTransactionCommand.Parameters.AddWithValue("@type", Transaction.TransactionType.Transfer.ToString());
@@ -157,10 +180,10 @@ public class TransactionRepository
             insertTransactionCommand.Parameters.AddWithValue("@senderAccountNumber", sender.AccountNumber);
             insertTransactionCommand.Parameters.AddWithValue("@receiverAccountNumber", receiver.AccountNumber);
             insertTransactionCommand.Parameters.AddWithValue("@balanceAfter", sender.Balance - amount);
-            insertTransactionCommand.Parameters.AddWithValue("@userId", sender.Id);
+            // insertTransactionCommand.Parameters.AddWithValue("@Id", sender.Id);
             insertTransactionCommand.ExecuteNonQuery();
-            
-            //update in database
+
+            // Update sender and receiver objects
             sender.Balance -= amount;
             receiver.Balance += amount;
             sender.Transaction.Add(new Transaction
@@ -186,15 +209,15 @@ public class TransactionRepository
             });
 
             transaction.Commit();
+            conn.Close();
             return true;
         }
         catch (Exception e)
         {
             transaction.Rollback();
-            Console.WriteLine("Error" + e.Message);
+            Console.WriteLine("Error: " + e.Message);
             return false;
-
-
         }
     }
+}
 }

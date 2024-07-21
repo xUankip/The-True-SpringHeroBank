@@ -12,5 +12,9 @@ public class TransactionController
                 transaction.Id, transaction.CreatedAt, transaction.Type, transaction.Amount, transaction.SenderAccountNumber, transaction.ReciverAccountNumber, transaction.BalanceAfter);
         }
     }
-    
+
+    public void DisplayTransactionByAccountNumber()
+    {
+        
+    }
 }

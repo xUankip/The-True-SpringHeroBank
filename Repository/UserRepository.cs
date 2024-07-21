@@ -37,7 +37,8 @@ public class UserRepository
             using (var conn = new MySqlConnection(MySqlConnectionString))
             {
                 conn.Open();
-                string query = $"SELECT Id, AccountNumber, UserName, PhoneNumber, Balance, Status FROM users WHERE {info} = @value;";
+                string query =
+                    $"SELECT Id, AccountNumber, UserName, FullName, PhoneNumber, Balance, Status FROM users WHERE {info} = @value";
                 var command = new MySqlCommand(query, conn);
                 command.Parameters.AddWithValue("@value", value);
 
@@ -49,6 +50,7 @@ public class UserRepository
                         {
                             Id = reader.GetInt32("Id"),
                             UserName = reader.GetString("UserName"),
+                            FullName = reader.GetString("FullName"),
                             AccountNumber = reader.GetString("AccountNumber"),
                             PhoneNumber = reader.GetString("PhoneNumber"),
                             Balance = reader.GetDouble("Balance"),
@@ -84,7 +86,6 @@ public class UserRepository
     {
         List<User> users = new List<User>();
         var conn = new MySqlConnection(MySqlConnectionString);
-        conn.Open();
         try
         {
             conn.Open();
@@ -153,7 +154,91 @@ public class UserRepository
             return user;
         }
         Console.WriteLine("Wrong UserName Or PassWord");
+        conn.Close();
         return null;
+    }
+
+    public User CheckBalance(string accountNumber)
+    {
+        User user = new User();
+        using (var conn = new MySqlConnection(MySqlConnectionString))
+        {
+            conn.Open();
+            string query = "SELECT Balance FROM users WHERE AccountNumber = @accountNumber";
+            var command = new MySqlCommand(query, conn);
+            command.Parameters.AddWithValue("@accountNumber", accountNumber);
+            var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                user.Balance = reader.GetDouble("Balance");
+            }
+            conn.Close();
+        }
+        return user;
+    }
+
+    public User EditInfomation(User user, string accountNumber)
+    {
+        try
+        {
+            using (var conn = new MySqlConnection(MySqlConnectionString))
+            {
+                conn.Open();
+                string query = "UPDATE users set FullName = @fullName, phoneNumber = @phoneNumber WHERE AccountNumber = @accountNumber";
+                var command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@accountNumber", accountNumber);
+                command.Parameters.AddWithValue("@fullName", user.FullName);
+                command.Parameters.AddWithValue("@phoneNumber", user.PhoneNumber);
+                command.ExecuteNonQuery();
+                Console.WriteLine("Edit Successful!");
+                conn.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        return user;
+    }
+
+    public bool EditPassword(User user, string currentPassword, string newPassword)
+    {
+        using (var conn = new MySqlConnection(MySqlConnectionString))
+        {
+            conn.Open();
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                // Check current Password
+                string query = "SELECT PassWord FROM users WHERE Id = @Id";
+                var command = new MySqlCommand(query, conn, transaction);
+                command.Parameters.AddWithValue("@Id", user.Id);
+                string storedPassword = command.ExecuteScalar()?.ToString();
+
+                if (storedPassword != currentPassword)
+                {
+                    Console.WriteLine("Current password is incorrect.");
+                    return false;
+                }
+
+                // Update New Password
+                string updatePasswordQuery = "UPDATE users SET PassWord = @newPassword WHERE Id = @Id";
+                var updateCommand = new MySqlCommand(updatePasswordQuery, conn, transaction);
+                updateCommand.Parameters.AddWithValue("@newPassword", newPassword);
+                updateCommand.Parameters.AddWithValue("@Id", user.Id);
+                updateCommand.ExecuteNonQuery();
+
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception e)
+            {
+                transaction.Rollback();
+                Console.WriteLine(e);
+                return false;
+            }
+        }
     }
 
     public List<Transaction> Transactions()
