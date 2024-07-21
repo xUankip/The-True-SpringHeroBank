@@ -241,8 +241,51 @@ public class UserRepository
         }
     }
 
-    public List<Transaction> Transactions()
+    public bool ChangeStatus(string accountNumber)
     {
-        throw new NotImplementedException();
+        using (var conn = new MySqlConnection(MySqlConnectionString))
+        {
+            conn.Open();
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                // current status
+                string getStatusQuery = "SELECT Status FROM users WHERE AccountNumber = @accountNumber";
+                var getStatusCommand = new MySqlCommand(getStatusQuery, conn, transaction);
+                getStatusCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+                var reader = getStatusCommand.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    int currentStatus = reader.GetInt32("Status");
+                    int newStatus = currentStatus == 1 ? 0 : 1;
+                    reader.Close(); // Đóng reader trước khi thực hiện truy vấn khác
+
+                    // Update status
+                    string updateStatusQuery =
+                        "UPDATE users SET Status = @newStatus WHERE AccountNumber = @accountNumber";
+                    var updateStatusCommand = new MySqlCommand(updateStatusQuery, conn, transaction);
+                    updateStatusCommand.Parameters.AddWithValue("@newStatus", newStatus);
+                    updateStatusCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+                    updateStatusCommand.ExecuteNonQuery();
+
+                    transaction.Commit();
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Account not found.");
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                transaction.Rollback();
+                Console.WriteLine("Error: " + e.Message);
+            }
+
+            return false;
+        }
     }
+    
 }

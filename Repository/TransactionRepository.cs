@@ -220,4 +220,66 @@ public class TransactionRepository
         }
     }
 }
+
+    public List<Transaction> FindAllTransactions()
+    {
+        var transactions = new List<Transaction>();
+        using (var conn = new MySqlConnection(MySqlConnectionString))
+        {
+            conn.Open();
+            string query =
+                "SELECT * FROM transactions";
+            var command = new MySqlCommand(query, conn);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var transaction = new Transaction
+                {
+                    Id = reader.GetInt32("Id"),
+                    CreatedAt = reader.GetDateTime("CreatedAt"),
+                    Type = (Transaction.TransactionType)Enum.Parse(typeof(Transaction.TransactionType),
+                        reader.GetString("Type")),
+                    Amount = reader.GetDouble("Amount"),
+                    SenderAccountNumber = reader.GetString("SenderAccountNumber"),
+                    ReciverAccountNumber = reader.GetString("ReciverAccountNumber"),
+                    BalanceAfter = reader.GetDouble("BalanceAfter")
+                };
+                transactions.Add(transaction);
+            }
+
+            return transactions;
+        }
+    }
+
+    public List<Transaction> FindTransactionsByAccountNumber(string accountNumber)
+    {
+        var transactions = new List<Transaction>();
+
+        using (var conn = new MySqlConnection(MySqlConnectionString))
+        {
+            conn.Open();
+            string query = "SELECT * FROM transactions WHERE SenderAccountNumber = @accountNumber OR ReciverAccountNumber = @accountNumber";
+            var command = new MySqlCommand(query, conn);
+            command.Parameters.AddWithValue("@accountNumber", accountNumber);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var transaction = new Transaction
+                {
+                    Id = reader.GetInt32("Id"),
+                    CreatedAt = reader.GetDateTime("CreatedAt"),
+                    Type = (Transaction.TransactionType)Enum.Parse(typeof(Transaction.TransactionType), reader.GetString("Type")),
+                    Amount = reader.GetDouble("Amount"),
+                    SenderAccountNumber = reader.GetString("SenderAccountNumber"),
+                    ReciverAccountNumber = reader.GetString("ReciverAccountNumber"),
+                    BalanceAfter = reader.GetDouble("BalanceAfter")
+                };
+                transactions.Add(transaction);
+            }
+        }
+
+        return transactions;
+    }
 }

@@ -37,6 +37,7 @@ public class MainMenu
     public void AdminMenu(User user)
     { 
         UserController userController = new UserController();
+        TransactionController transactionController = new TransactionController();
         while (true)
         {
             Console.Clear();
@@ -63,7 +64,7 @@ public class MainMenu
                     userController.DisplayUsers();
                     break;
                 case "2":
-                    // TransactionList
+                    transactionController.DisplayTransaction();
                     break;
                 case "3":
                     userController.SearchUsersByName();
@@ -78,16 +79,16 @@ public class MainMenu
                     userController.Register();
                     break;
                 case "7":
-                    // LockUnlockUserAccount();
+                    userController.LockUnlockUserAccount();
                     break;
                 case "8":
-                    // SearchTransactionHistoryByAccountNumber();
+                    transactionController.DisplayTransactionByAccountNumber();
                     break;
                 case "9":
-                    // UpdateAccountInfo();
+                    userController.UpdatePersonalInfo();
                     break;
                 case "10":
-                    // UpdateAccountPassword();
+                    userController.UpdatePassword();
                     break;
                 case "11":
                     break;
@@ -142,7 +143,7 @@ public class MainMenu
                     userController.UpdatePassword();
                     break;
                 case "7":
-                    // userController.QueryTransactionHistory();
+                    transactionController.DisplayTransactionByAccountNumber();
                     break;
                 case "8":
                     break;

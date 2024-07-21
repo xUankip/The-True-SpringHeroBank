@@ -117,21 +117,6 @@ public class UserController
     
     public void Deposit()
     {
-        // TransactionRepository transactionRepository = new TransactionRepository();
-        // User user = new User();
-        // Console.WriteLine("Enter your Password");
-        // string pass = Console.ReadLine();
-        // if (pass == user.PassWord)
-        // {
-        //     Console.WriteLine("Enter the amount you want to deposit");
-        //     double amount = Convert.ToDouble(Console.ReadLine());
-        //     bool success = transactionRepository.UserDeposit(user, amount);
-        //     if (amount > 0 && success)
-        //     {
-        //         Console.WriteLine("Deposit Successful!");
-        //         DisplayByInfo(user);
-        //     }
-        // }
         Console.WriteLine("Enter your Account Number:");
         string accountNumber = Console.ReadLine();
         User user = _userRepository.FindByAccountNumber(accountNumber);
@@ -311,6 +296,23 @@ public class UserController
         else
         {
             Console.WriteLine("Failed to change password.");
+        }
+    }
+
+    public void LockUnlockUserAccount()
+    {
+        Console.WriteLine("Enter Account Number:");
+        string accountNumber = Console.ReadLine();
+
+        bool success = _userRepository.ChangeStatus(accountNumber);
+
+        if (success)
+        {
+            Console.WriteLine("Account status change successfully!");
+        }
+        else
+        {
+            Console.WriteLine("Failed to change status account status.");
         }
     }
 }
