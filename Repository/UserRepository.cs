@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 using MySqlConnector;
+using The_True_SpringHeroBank.Controller;
 using The_True_SpringHeroBank.Entity;
 using The_True_SpringHeroBank.Interface;
 
@@ -127,31 +128,37 @@ public class UserRepository
     {
         var conn = new MySqlConnection(MySqlConnectionString);
         conn.Open();
-        string query = "SELECT * FROM users WHERE Username = @Username AND Password = @Password";
+        string query = "SELECT * FROM users WHERE Username = @Username";
         var command = new MySqlCommand(query, conn);
         command.Parameters.AddWithValue("@Username", userName);
-        command.Parameters.AddWithValue("@Password", passWord);
         var reader = command.ExecuteReader();
         if (reader.Read())
         {
-            if (reader.GetInt32(0) == 0)
+            var hashedPassword = reader.GetString("Password");
+            if (PasswordHelper.VerifyPassword(passWord, hashedPassword))
             {
-                Console.WriteLine("Account LOCKED");
+                if (reader.GetInt32("Status") == 0)
+                {
+                    Console.WriteLine("Account LOCKED");
+                    conn.Close();
+                    return null;
+                }
+                User user = new User
+                {
+                    Id = reader.GetInt32("Id"),
+                    UserName = reader.GetString("Username"),
+                    PassWord = reader.GetString("Password"),
+                    FullName = reader.GetString("FullName"),
+                    PhoneNumber = reader.GetString("PhoneNumber"),
+                    AccountNumber = reader.GetString("AccountNumber"),
+                    Balance = reader.GetDouble("Balance"),
+                    Type = (User.UserType)Enum.Parse(typeof(User.UserType), reader.GetString("Type")),
+                    Status = reader.GetInt32("Status")
+                };
+                Console.WriteLine("Login Success");
+                conn.Close();
+                return user;
             }
-            User user = new User
-            {
-                Id = reader.GetInt32("Id"),
-                UserName = reader.GetString("Username"),
-                PassWord = reader.GetString("Password"),
-                FullName = reader.GetString("FullName"),
-                PhoneNumber = reader.GetString("PhoneNumber"),
-                AccountNumber = reader.GetString("AccountNumber"),
-                Balance = reader.GetDouble("Balance"),
-                Type = (User.UserType)Enum.Parse(typeof(User.UserType), reader.GetString("Type")),
-                Status = reader.GetInt32("Status")
-            };
-            Console.WriteLine("Login Success");
-            return user;
         }
         Console.WriteLine("Wrong UserName Or PassWord");
         conn.Close();

@@ -91,6 +91,7 @@ public class MainMenu
                     userController.UpdatePassword();
                     break;
                 case "11":
+                    Main();
                     break;
                 default:
                     Console.WriteLine("Invalid choice, Try Again!");
@@ -107,7 +108,7 @@ public class MainMenu
         TransactionController transactionController = new TransactionController();
         while (true)
         {
-            // Console.Clear();
+            Console.Clear();
             Console.WriteLine("------ Spring Hero Bank ------");
             Console.WriteLine($"Welcome back User {user.UserName}");
             Console.WriteLine("1. Deposit.");
@@ -146,6 +147,7 @@ public class MainMenu
                     transactionController.DisplayTransactionByAccountNumber();
                     break;
                 case "8":
+                    Main();
                     break;
                 default:
                     Console.WriteLine("Invalid choice, Try Agian");

@@ -33,6 +33,7 @@ public class UserController
         }else
         {
             Console.WriteLine("Invalid Choice");
+            return;
         }
 
         Random random = new Random();
@@ -42,9 +43,9 @@ public class UserController
             randomDigits += random.Next(0, 10).ToString();
         }
         user.AccountNumber = randomDigits;
+        user.PassWord = PasswordHelper.HashPassword(user.PassWord);
         _userRepository.AddUser(user);
     }
-
     public void DisplayUsers()
     {
         List<User> users = _userRepository.FindAll();
