@@ -1,7 +1,14 @@
 ﻿namespace The_True_SpringHeroBank.Entity;
 
-public class Transaction()
+public class Transaction
 {
+    public enum TransactionType
+    {
+        Deposit,
+        Withdraw,
+        Transfer
+    }
+
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public TransactionType Type { get; set; }
@@ -9,8 +16,4 @@ public class Transaction()
     public string SenderAccountNumber { get; set; }
     public string ReciverAccountNumber { get; set; }
     public double BalanceAfter { get; set; }
-    public enum TransactionType
-    {
-        Deposit, Withdraw, Transfer
-    }
 }

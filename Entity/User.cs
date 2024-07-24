@@ -1,9 +1,13 @@
-﻿using System.Transactions;
-
-namespace The_True_SpringHeroBank.Entity;
+﻿namespace The_True_SpringHeroBank.Entity;
 
 public class User
 {
+    public enum UserType
+    {
+        RegularUser,
+        Admin
+    }
+
     public int Id { get; set; }
     public string UserName { get; set; }
     public string PassWord { get; set; }
@@ -11,11 +15,7 @@ public class User
     public string AccountNumber { get; set; }
     public string PhoneNumber { get; set; }
     public double Balance { get; set; } = 0;
-    public List<Transaction> Transaction { get; set; } = new List<Transaction>();
+    public List<Transaction> Transaction { get; set; } = new();
     public UserType Type { get; set; }
     public int Status { get; set; } //1-active 0-lock
-    public enum UserType
-    {
-        RegularUser, Admin
-    }
 }

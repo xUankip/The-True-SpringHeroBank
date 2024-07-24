@@ -17,14 +17,14 @@ public class TransactionRepository
             try
             {
                 // Update user balance
-                string updateBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @Id";
+                var updateBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @Id";
                 var command = new MySqlCommand(updateBalanceQuery, conn, transaction);
                 command.Parameters.AddWithValue("@amount", amount);
                 command.Parameters.AddWithValue("@Id", user.Id);
                 command.ExecuteNonQuery();
 
                 // Insert transaction record
-                string insertTransactionQuery =
+                var insertTransactionQuery =
                     "INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter, Id)" +
                     " VALUES (@createdAt, @type, @amount, @senderAccountNumber, @reciverAccountNumber, @balanceAfter, @Id)";
                 var command2 = new MySqlCommand(insertTransactionQuery, conn, transaction);
@@ -70,14 +70,14 @@ public class TransactionRepository
             try
             {
                 // Update user balance
-                string updateBalanceQuery = "UPDATE users SET Balance = Balance - @amount WHERE Id = @Id";
+                var updateBalanceQuery = "UPDATE users SET Balance = Balance - @amount WHERE Id = @Id";
                 var command = new MySqlCommand(updateBalanceQuery, conn, transaction);
                 command.Parameters.AddWithValue("@amount", amount);
                 command.Parameters.AddWithValue("@Id", user.Id);
                 command.ExecuteNonQuery();
 
                 // Insert transaction record
-                string insertTransactionQuery =
+                var insertTransactionQuery =
                     "INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter, Id)" +
                     " VALUES (@createdAt, @type, @amount, @senderAccountNumber, @reciverAccountNumber, @balanceAfter, @Id)";
                 var command2 = new MySqlCommand(insertTransactionQuery, conn, transaction);
@@ -115,111 +115,111 @@ public class TransactionRepository
     }
 
     public bool UserTransfer(User sender, string receiverAccountNumber, double amount)
-{
-    using (var conn = new MySqlConnection(MySqlConnectionString))
     {
-        conn.Open();
-        var transaction = conn.BeginTransaction();
-        try
+        using (var conn = new MySqlConnection(MySqlConnectionString))
         {
-            // Find the receiver
-            string findReceiverQuery = "SELECT * FROM users WHERE AccountNumber = @receiverAccountNumber";
-            var findReceiverCommand = new MySqlCommand(findReceiverQuery, conn, transaction);
-            findReceiverCommand.Parameters.AddWithValue("@receiverAccountNumber", receiverAccountNumber);
-            User receiver = null;
-            using (var reader = findReceiverCommand.ExecuteReader())
+            conn.Open();
+            var transaction = conn.BeginTransaction();
+            try
             {
-                if (reader.Read())
+                // Find the receiver
+                var findReceiverQuery = "SELECT * FROM users WHERE AccountNumber = @receiverAccountNumber";
+                var findReceiverCommand = new MySqlCommand(findReceiverQuery, conn, transaction);
+                findReceiverCommand.Parameters.AddWithValue("@receiverAccountNumber", receiverAccountNumber);
+                User receiver = null;
+                using (var reader = findReceiverCommand.ExecuteReader())
                 {
-                    receiver = new User
-                    {
-                        Id = reader.GetInt32("Id"),
-                        UserName = reader.GetString("UserName"),
-                        AccountNumber = reader.GetString("AccountNumber"),
-                        FullName = reader.GetString("FullName"),
-                        PhoneNumber = reader.GetString("PhoneNumber"),
-                        Balance = reader.GetDouble("Balance"),
-                        Status = reader.GetInt32("Status")
-                    };
+                    if (reader.Read())
+                        receiver = new User
+                        {
+                            Id = reader.GetInt32("Id"),
+                            UserName = reader.GetString("UserName"),
+                            AccountNumber = reader.GetString("AccountNumber"),
+                            FullName = reader.GetString("FullName"),
+                            PhoneNumber = reader.GetString("PhoneNumber"),
+                            Balance = reader.GetDouble("Balance"),
+                            Status = reader.GetInt32("Status")
+                        };
                 }
-            }
 
-            if (receiver == null)
-            {
-                Console.WriteLine("Account Not Found");
-                return false;
-            }
+                if (receiver == null)
+                {
+                    Console.WriteLine("Account Not Found");
+                    return false;
+                }
 
-            if (sender.Balance < amount)
-            {
-                Console.WriteLine("Insufficient Balance");
-                return false;
-            }
+                if (sender.Balance < amount)
+                {
+                    Console.WriteLine("Insufficient Balance");
+                    return false;
+                }
 
-            // Update sender balance
-            string updateSenderBalanceQuery = "UPDATE users SET Balance = Balance - @amount WHERE Id = @senderId";
-            var updateSenderBalanceCommand = new MySqlCommand(updateSenderBalanceQuery, conn, transaction);
-            updateSenderBalanceCommand.Parameters.AddWithValue("@amount", amount);
-            updateSenderBalanceCommand.Parameters.AddWithValue("@senderId", sender.Id);
-            updateSenderBalanceCommand.ExecuteNonQuery();
+                // Update sender balance
+                var updateSenderBalanceQuery = "UPDATE users SET Balance = Balance - @amount WHERE Id = @senderId";
+                var updateSenderBalanceCommand = new MySqlCommand(updateSenderBalanceQuery, conn, transaction);
+                updateSenderBalanceCommand.Parameters.AddWithValue("@amount", amount);
+                updateSenderBalanceCommand.Parameters.AddWithValue("@senderId", sender.Id);
+                updateSenderBalanceCommand.ExecuteNonQuery();
 
-            // Update receiver balance
-            string updateReceiverBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @receiverId";
-            var updateReceiverBalanceCommand = new MySqlCommand(updateReceiverBalanceQuery, conn, transaction);
-            updateReceiverBalanceCommand.Parameters.AddWithValue("@amount", amount);
-            updateReceiverBalanceCommand.Parameters.AddWithValue("@receiverId", receiver.Id);
-            updateReceiverBalanceCommand.ExecuteNonQuery();
+                // Update receiver balance
+                var updateReceiverBalanceQuery = "UPDATE users SET Balance = Balance + @amount WHERE Id = @receiverId";
+                var updateReceiverBalanceCommand = new MySqlCommand(updateReceiverBalanceQuery, conn, transaction);
+                updateReceiverBalanceCommand.Parameters.AddWithValue("@amount", amount);
+                updateReceiverBalanceCommand.Parameters.AddWithValue("@receiverId", receiver.Id);
+                updateReceiverBalanceCommand.ExecuteNonQuery();
 
-            // Save transaction
-            string insertTransactionQuery = @"INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter) 
+                // Save transaction
+                var insertTransactionQuery =
+                    @"INSERT INTO transactions (CreatedAt, Type, Amount, SenderAccountNumber, ReciverAccountNumber, BalanceAfter) 
                                               VALUES (@createdAt, @type, @amount, @senderAccountNumber, @receiverAccountNumber, @balanceAfter)";
-            var insertTransactionCommand = new MySqlCommand(insertTransactionQuery, conn, transaction);
-            insertTransactionCommand.Parameters.AddWithValue("@createdAt", DateTime.Now);
-            insertTransactionCommand.Parameters.AddWithValue("@type", Transaction.TransactionType.Transfer.ToString());
-            insertTransactionCommand.Parameters.AddWithValue("@amount", amount);
-            insertTransactionCommand.Parameters.AddWithValue("@senderAccountNumber", sender.AccountNumber);
-            insertTransactionCommand.Parameters.AddWithValue("@receiverAccountNumber", receiver.AccountNumber);
-            insertTransactionCommand.Parameters.AddWithValue("@balanceAfter", sender.Balance - amount);
-            // insertTransactionCommand.Parameters.AddWithValue("@Id", sender.Id);
-            insertTransactionCommand.ExecuteNonQuery();
+                var insertTransactionCommand = new MySqlCommand(insertTransactionQuery, conn, transaction);
+                insertTransactionCommand.Parameters.AddWithValue("@createdAt", DateTime.Now);
+                insertTransactionCommand.Parameters.AddWithValue("@type",
+                    Transaction.TransactionType.Transfer.ToString());
+                insertTransactionCommand.Parameters.AddWithValue("@amount", amount);
+                insertTransactionCommand.Parameters.AddWithValue("@senderAccountNumber", sender.AccountNumber);
+                insertTransactionCommand.Parameters.AddWithValue("@receiverAccountNumber", receiver.AccountNumber);
+                insertTransactionCommand.Parameters.AddWithValue("@balanceAfter", sender.Balance - amount);
+                // insertTransactionCommand.Parameters.AddWithValue("@Id", sender.Id);
+                insertTransactionCommand.ExecuteNonQuery();
 
-            // Update sender and receiver objects
-            sender.Balance -= amount;
-            receiver.Balance += amount;
-            sender.Transaction.Add(new Transaction
+                // Update sender and receiver objects
+                sender.Balance -= amount;
+                receiver.Balance += amount;
+                sender.Transaction.Add(new Transaction
+                {
+                    Id = (int)insertTransactionCommand.LastInsertedId,
+                    CreatedAt = DateTime.Now,
+                    Type = Transaction.TransactionType.Transfer,
+                    Amount = amount,
+                    SenderAccountNumber = sender.AccountNumber,
+                    ReciverAccountNumber = receiver.AccountNumber,
+                    BalanceAfter = sender.Balance
+                });
+
+                receiver.Transaction.Add(new Transaction
+                {
+                    Id = (int)insertTransactionCommand.LastInsertedId,
+                    CreatedAt = DateTime.Now,
+                    Type = Transaction.TransactionType.Transfer,
+                    Amount = amount,
+                    SenderAccountNumber = sender.AccountNumber,
+                    ReciverAccountNumber = receiver.AccountNumber,
+                    BalanceAfter = receiver.Balance
+                });
+
+                transaction.Commit();
+                conn.Close();
+                return true;
+            }
+            catch (Exception e)
             {
-                Id = (int)insertTransactionCommand.LastInsertedId,
-                CreatedAt = DateTime.Now,
-                Type = Transaction.TransactionType.Transfer,
-                Amount = amount,
-                SenderAccountNumber = sender.AccountNumber,
-                ReciverAccountNumber = receiver.AccountNumber,
-                BalanceAfter = sender.Balance
-            });
-
-            receiver.Transaction.Add(new Transaction
-            {
-                Id = (int)insertTransactionCommand.LastInsertedId,
-                CreatedAt = DateTime.Now,
-                Type = Transaction.TransactionType.Transfer,
-                Amount = amount,
-                SenderAccountNumber = sender.AccountNumber,
-                ReciverAccountNumber = receiver.AccountNumber,
-                BalanceAfter = receiver.Balance
-            });
-
-            transaction.Commit();
-            conn.Close();
-            return true;
-        }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            Console.WriteLine("Error: " + e.Message);
-            return false;
+                transaction.Rollback();
+                Console.WriteLine("Error: " + e.Message);
+                return false;
+            }
         }
     }
-}
 
     public List<Transaction> FindAllTransactions()
     {
@@ -227,7 +227,7 @@ public class TransactionRepository
         using (var conn = new MySqlConnection(MySqlConnectionString))
         {
             conn.Open();
-            string query =
+            var query =
                 "SELECT * FROM transactions";
             var command = new MySqlCommand(query, conn);
             var reader = command.ExecuteReader();
@@ -259,7 +259,8 @@ public class TransactionRepository
         using (var conn = new MySqlConnection(MySqlConnectionString))
         {
             conn.Open();
-            string query = "SELECT * FROM transactions WHERE SenderAccountNumber = @accountNumber OR ReciverAccountNumber = @accountNumber";
+            var query =
+                "SELECT * FROM transactions WHERE SenderAccountNumber = @accountNumber OR ReciverAccountNumber = @accountNumber";
             var command = new MySqlCommand(query, conn);
             command.Parameters.AddWithValue("@accountNumber", accountNumber);
             var reader = command.ExecuteReader();
@@ -270,7 +271,8 @@ public class TransactionRepository
                 {
                     Id = reader.GetInt32("Id"),
                     CreatedAt = reader.GetDateTime("CreatedAt"),
-                    Type = (Transaction.TransactionType)Enum.Parse(typeof(Transaction.TransactionType), reader.GetString("Type")),
+                    Type = (Transaction.TransactionType)Enum.Parse(typeof(Transaction.TransactionType),
+                        reader.GetString("Type")),
                     Amount = reader.GetDouble("Amount"),
                     SenderAccountNumber = reader.GetString("SenderAccountNumber"),
                     ReciverAccountNumber = reader.GetString("ReciverAccountNumber"),

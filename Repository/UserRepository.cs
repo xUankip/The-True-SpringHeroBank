@@ -1,30 +1,30 @@
-﻿using System.Data;
-using System.Data.Common;
-using MySqlConnector;
+﻿using MySqlConnector;
 using The_True_SpringHeroBank.Controller;
 using The_True_SpringHeroBank.Entity;
-using The_True_SpringHeroBank.Interface;
 
 namespace The_True_SpringHeroBank.Repository;
 
 public class UserRepository
 {
-    private const string MySqlConnectionString = "server=127.0.0.1;uid=root;" + "pwd=;database=the_true_spring_hero_bank";
+    private const string MySqlConnectionString =
+        "server=127.0.0.1;uid=root;" + "pwd=;database=the_true_spring_hero_bank";
+
     public void AddUser(User user)
     {
         var conn = new MySqlConnection(MySqlConnectionString);
         conn.Open();
-        string query = "INSERT INTO users (Username, Password, FullName, PhoneNumber, AccountNumber, Balance, Type, Status) " +
-                       "VALUES (@Username, @Password, @FullName, @PhoneNumber, @AccountNumber, @Balance, @Type, @Status)";
+        var query =
+            "INSERT INTO users (Username, Password, FullName, PhoneNumber, AccountNumber, Balance, Type, Status) " +
+            "VALUES (@Username, @Password, @FullName, @PhoneNumber, @AccountNumber, @Balance, @Type, @Status)";
         var command = new MySqlCommand(query, conn);
         command.Parameters.AddWithValue("@Username", user.UserName);
         command.Parameters.AddWithValue("@Password", user.PassWord);
         command.Parameters.AddWithValue("@FullName", user.FullName);
         command.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-        command.Parameters.AddWithValue("@AccountNumber",user.AccountNumber);
+        command.Parameters.AddWithValue("@AccountNumber", user.AccountNumber);
         command.Parameters.AddWithValue("@Balance", 0);
         command.Parameters.AddWithValue("@Type", user.Type.ToString());
-        command.Parameters.AddWithValue("@Status",1);
+        command.Parameters.AddWithValue("@Status", 1);
         command.ExecuteNonQuery();
         conn.Close();
         Console.WriteLine("Sign Up Successfully");
@@ -38,7 +38,7 @@ public class UserRepository
             using (var conn = new MySqlConnection(MySqlConnectionString))
             {
                 conn.Open();
-                string query =
+                var query =
                     $"SELECT Id, AccountNumber, UserName, FullName, PhoneNumber, Balance, Status FROM users WHERE {info} = @value";
                 var command = new MySqlCommand(query, conn);
                 command.Parameters.AddWithValue("@value", value);
@@ -46,7 +46,6 @@ public class UserRepository
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
-                    {
                         user = new User
                         {
                             Id = reader.GetInt32("Id"),
@@ -57,7 +56,6 @@ public class UserRepository
                             Balance = reader.GetDouble("Balance"),
                             Status = reader.GetInt32("Status")
                         };
-                    }
                 }
             }
         }
@@ -65,6 +63,7 @@ public class UserRepository
         {
             Console.WriteLine(e);
         }
+
         return user;
     }
 
@@ -85,30 +84,31 @@ public class UserRepository
 
     public List<User> FindAll()
     {
-        List<User> users = new List<User>();
+        var users = new List<User>();
         var conn = new MySqlConnection(MySqlConnectionString);
         try
         {
             conn.Open();
-            string query = "SELECT * FROM users";
+            var query = "SELECT * FROM users";
             var command = new MySqlCommand(query, conn);
             var reader = command.ExecuteReader();
 
             while (reader.Read())
-            {
-                users.Add(new User()
+                users.Add(new User
                 {
                     Id = reader.GetInt32("Id"),
-                    AccountNumber = reader["AccountNumber"] != DBNull.Value ? reader.GetString("AccountNumber") : string.Empty,
+                    AccountNumber = reader["AccountNumber"] != DBNull.Value
+                        ? reader.GetString("AccountNumber")
+                        : string.Empty,
                     UserName = reader["UserName"] != DBNull.Value ? reader.GetString("UserName") : string.Empty,
                     PassWord = reader["Password"] != DBNull.Value ? reader.GetString("Password") : string.Empty,
                     FullName = reader["FullName"] != DBNull.Value ? reader.GetString("FullName") : string.Empty,
-                    PhoneNumber = reader["PhoneNumber"] != DBNull.Value ? reader.GetString("PhoneNumber") : string.Empty,
+                    PhoneNumber =
+                        reader["PhoneNumber"] != DBNull.Value ? reader.GetString("PhoneNumber") : string.Empty,
                     Balance = reader["Balance"] != DBNull.Value ? reader.GetDouble("Balance") : 0.0,
                     Type = (User.UserType)Enum.Parse(typeof(User.UserType), reader.GetString("Type")),
                     Status = reader["Status"] != DBNull.Value ? reader.GetInt32("Status") : 0
                 });
-            }
 
             reader.Close();
         }
@@ -128,7 +128,7 @@ public class UserRepository
     {
         var conn = new MySqlConnection(MySqlConnectionString);
         conn.Open();
-        string query = "SELECT * FROM users WHERE Username = @Username";
+        var query = "SELECT * FROM users WHERE Username = @Username";
         var command = new MySqlCommand(query, conn);
         command.Parameters.AddWithValue("@Username", userName);
         var reader = command.ExecuteReader();
@@ -143,7 +143,8 @@ public class UserRepository
                     conn.Close();
                     return null;
                 }
-                User user = new User
+
+                var user = new User
                 {
                     Id = reader.GetInt32("Id"),
                     UserName = reader.GetString("Username"),
@@ -160,6 +161,7 @@ public class UserRepository
                 return user;
             }
         }
+
         Console.WriteLine("Wrong UserName Or PassWord");
         conn.Close();
         return null;
@@ -167,20 +169,18 @@ public class UserRepository
 
     public User CheckBalance(string accountNumber)
     {
-        User user = new User();
+        var user = new User();
         using (var conn = new MySqlConnection(MySqlConnectionString))
         {
             conn.Open();
-            string query = "SELECT Balance FROM users WHERE AccountNumber = @accountNumber";
+            var query = "SELECT Balance FROM users WHERE AccountNumber = @accountNumber";
             var command = new MySqlCommand(query, conn);
             command.Parameters.AddWithValue("@accountNumber", accountNumber);
             var reader = command.ExecuteReader();
-            if (reader.Read())
-            {
-                user.Balance = reader.GetDouble("Balance");
-            }
+            if (reader.Read()) user.Balance = reader.GetDouble("Balance");
             conn.Close();
         }
+
         return user;
     }
 
@@ -191,7 +191,8 @@ public class UserRepository
             using (var conn = new MySqlConnection(MySqlConnectionString))
             {
                 conn.Open();
-                string query = "UPDATE users set FullName = @fullName, phoneNumber = @phoneNumber WHERE AccountNumber = @accountNumber";
+                var query =
+                    "UPDATE users set FullName = @fullName, phoneNumber = @phoneNumber WHERE AccountNumber = @accountNumber";
                 var command = new MySqlCommand(query, conn);
                 command.Parameters.AddWithValue("@accountNumber", accountNumber);
                 command.Parameters.AddWithValue("@fullName", user.FullName);
@@ -206,6 +207,7 @@ public class UserRepository
             Console.WriteLine(e);
             throw;
         }
+
         return user;
     }
 
@@ -218,10 +220,10 @@ public class UserRepository
             try
             {
                 // Check current Password
-                string query = "SELECT PassWord FROM users WHERE Id = @Id";
+                var query = "SELECT PassWord FROM users WHERE Id = @Id";
                 var command = new MySqlCommand(query, conn, transaction);
                 command.Parameters.AddWithValue("@Id", user.Id);
-                string storedPassword = command.ExecuteScalar()?.ToString();
+                var storedPassword = command.ExecuteScalar()?.ToString();
 
                 if (storedPassword != currentPassword)
                 {
@@ -230,7 +232,7 @@ public class UserRepository
                 }
 
                 // Update New Password
-                string updatePasswordQuery = "UPDATE users SET PassWord = @newPassword WHERE Id = @Id";
+                var updatePasswordQuery = "UPDATE users SET PassWord = @newPassword WHERE Id = @Id";
                 var updateCommand = new MySqlCommand(updatePasswordQuery, conn, transaction);
                 updateCommand.Parameters.AddWithValue("@newPassword", newPassword);
                 updateCommand.Parameters.AddWithValue("@Id", user.Id);
@@ -257,19 +259,19 @@ public class UserRepository
             try
             {
                 // current status
-                string getStatusQuery = "SELECT Status FROM users WHERE AccountNumber = @accountNumber";
+                var getStatusQuery = "SELECT Status FROM users WHERE AccountNumber = @accountNumber";
                 var getStatusCommand = new MySqlCommand(getStatusQuery, conn, transaction);
                 getStatusCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
                 var reader = getStatusCommand.ExecuteReader();
 
                 if (reader.Read())
                 {
-                    int currentStatus = reader.GetInt32("Status");
-                    int newStatus = currentStatus == 1 ? 0 : 1;
+                    var currentStatus = reader.GetInt32("Status");
+                    var newStatus = currentStatus == 1 ? 0 : 1;
                     reader.Close(); // Đóng reader trước khi thực hiện truy vấn khác
 
                     // Update status
-                    string updateStatusQuery =
+                    var updateStatusQuery =
                         "UPDATE users SET Status = @newStatus WHERE AccountNumber = @accountNumber";
                     var updateStatusCommand = new MySqlCommand(updateStatusQuery, conn, transaction);
                     updateStatusCommand.Parameters.AddWithValue("@newStatus", newStatus);
@@ -279,11 +281,9 @@ public class UserRepository
                     transaction.Commit();
                     return true;
                 }
-                else
-                {
-                    Console.WriteLine("Account not found.");
-                    return false;
-                }
+
+                Console.WriteLine("Account not found.");
+                return false;
             }
             catch (Exception e)
             {
@@ -294,5 +294,4 @@ public class UserRepository
             return false;
         }
     }
-    
 }

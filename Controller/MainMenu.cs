@@ -3,11 +3,10 @@
 namespace The_True_SpringHeroBank.Controller;
 
 public class MainMenu
-{ 
-    
+{
     public void Main()
     {
-        UserController userController = new UserController();
+        var userController = new UserController();
         while (true)
         {
             Console.WriteLine("------------Spring Hero Bank------------");
@@ -16,7 +15,7 @@ public class MainMenu
             Console.WriteLine("3. Exit.");
             Console.WriteLine("——————————————————-");
             Console.Write("Type your choice (1,2,3): ");
-            string choice = Console.ReadLine();
+            var choice = Console.ReadLine();
             switch (choice)
             {
                 case "1":
@@ -35,9 +34,9 @@ public class MainMenu
     }
 
     public void AdminMenu(User user)
-    { 
-        UserController userController = new UserController();
-        TransactionController transactionController = new TransactionController();
+    {
+        var userController = new UserController();
+        var transactionController = new TransactionController();
         while (true)
         {
             Console.Clear();
@@ -97,6 +96,7 @@ public class MainMenu
                     Console.WriteLine("Invalid choice, Try Again!");
                     break;
             }
+
             Console.WriteLine("Enter to continue!");
             Console.ReadLine();
         }
@@ -104,8 +104,8 @@ public class MainMenu
 
     public void UserMenu(User user)
     {
-        UserController userController = new UserController();
-        TransactionController transactionController = new TransactionController();
+        var userController = new UserController();
+        var transactionController = new TransactionController();
         while (true)
         {
             Console.Clear();
